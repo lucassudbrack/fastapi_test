@@ -17,7 +17,7 @@ RUN apt-get -y update \
 
 #ENV PATH="${PATH}:/home/runner/.local/bin"
 
-WORKDIR /app
+WORKDIR home/app
 
 COPY ./  ./
 
