@@ -1,31 +1,17 @@
 FROM python:3.12.8-slim
 
-#Do not use env as this would persist after the build and would impact your containers, children images
 ARG DEBIAN_FRONTEND=noninteractive
-
-# force the stdout and stderr streams to be unbuffered.
 ENV PYTHONUNBUFFERED=1
 
-RUN apt-get -y update \
-    && apt-get -y upgrade \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-   # && useradd --uid 10000 -ms /bin/bash runner
-
-
-#USER 10000
-
-#ENV PATH="${PATH}:/home/runner/.local/bin"
-
-WORKDIR home/app
-
-COPY ./  ./
+WORKDIR /app
+COPY ./ ./
 
 RUN pip install --no-cache-dir poetry==1.8.5 \
-&& poetry install --only main
+ && poetry install --only main
 
+# Porta padrão (opcional, ajuda em ambientes sem PORT)
+ENV PORT=8000
 EXPOSE 8000
 
-ENTRYPOINT [ "poetry", "run" ]
-
-CMD ["sh", "-c", "poetry", "run", "uvicorn", "app.main:app", "--host 0.0.0.0 ", "--port", "${PORT:-8000}"]
+# Use shell para expandir ${PORT:-8000} e faça exec para repassar sinais corretamente
+CMD ["sh", "-c", "exec poetry run uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
