@@ -22,7 +22,7 @@ WORKDIR /app
 
 COPY ./  ./
 
-RUN pip install --no-cache-dir poetry \
+RUN pip install --no-cache-dir poetry==1.8.5 \
 && poetry install --only main
 
 EXPOSE 8000
