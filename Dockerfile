@@ -12,7 +12,6 @@ RUN apt-get -y update \
     && rm -rf /var/lib/apt/lists/* \
    # && useradd --uid 10000 -ms /bin/bash runner
 
-WORKDIR /home/runner/app
 
 #USER 10000
 
@@ -29,4 +28,4 @@ EXPOSE 8000
 
 ENTRYPOINT [ "poetry", "run" ]
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "$PORT"]
+CMD ["sh", "-c", "poetry", "run", "uvicorn", "app.main:app", "--host 0.0.0.0 ", "--port", "${PORT:-8000}"]
